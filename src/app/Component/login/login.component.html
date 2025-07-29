@@ -1,0 +1,106 @@
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            <div class="card shadow">
+                <div class="card-header text-center bg-primary text-white">
+                    <div class="d-flex align-items-center justify-content-center mb-2">
+                        <i class="fas fa-user-circle fs-1 me-2"></i>
+                        <span class="fw-bold fs-5">TM</span>
+                    </div>
+                    <h4>{{ isLoginMode ? 'Connexion' : 'Inscription' }}</h4>
+                </div>
+                <div class="card-body p-4">
+                    <!-- Image d'illustration avec icônes -->
+                    <div class="text-center mb-4">
+                        <i class="{{ isLoginMode ? 'fas fa-sign-in-alt' : 'fas fa-user-plus' }} text-primary"
+                            style="font-size: 4rem;"></i>
+                        <p class="text-muted mt-2">
+                            {{ isLoginMode ? 'Connectez-vous à votre compte' : 'Créez votre nouveau compte' }}
+                        </p>
+                    </div>
+
+                    <form [formGroup]="isLoginMode ? loginForm : registerForm" (ngSubmit)="onSubmit()">
+
+                        <!-- 🔐 Login Form -->
+                        <ng-container *ngIf="isLoginMode">
+                            <div class="mb-3">
+                                <label class="form-label">
+                                    <i class="fas fa-envelope me-2"></i>Email
+                                </label>
+                                <input type="email" formControlName="email" class="form-control"
+                                    placeholder="Votre email" />
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">
+                                    <i class="fas fa-lock me-2"></i>Mot de passe
+                                </label>
+                                <input type="password" formControlName="password" class="form-control"
+                                    placeholder="Votre mot de passe" />
+                            </div>
+                        </ng-container>
+
+                        <!-- 🧾 Register Form -->
+                        <ng-container *ngIf="!isLoginMode">
+                            <div class="mb-3">
+                                <label class="form-label">
+                                    <i class="fas fa-user me-2"></i>Nom
+                                </label>
+                                <input type="text" formControlName="name" class="form-control"
+                                    placeholder="Votre nom complet" />
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">
+                                    <i class="fas fa-envelope me-2"></i>Email
+                                </label>
+                                <input type="email" formControlName="email" class="form-control"
+                                    placeholder="Votre email" />
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">
+                                    <i class="fas fa-user-tag me-2"></i>Rôle
+                                </label>
+                                <select class="form-control" formControlName="role">
+                                    <option value="users">Utilisateur</option>
+                                    <option value="admin">Administrateur</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">
+                                    <i class="fas fa-lock me-2"></i>Mot de passe
+                                </label>
+                                <input type="password" formControlName="password" class="form-control"
+                                    placeholder="Créer un mot de passe" />
+                            </div>
+                        </ng-container>
+
+                        <!-- 🔄 Submit button -->
+                        <div class="d-grid gap-2 mb-3">
+                            <button class="btn btn-primary btn-lg" type="submit" [disabled]="loading">
+                                <i class="{{ isLoginMode ? 'fas fa-sign-in-alt' : 'fas fa-user-plus' }} me-2"></i>
+                                {{ isLoginMode ? 'Se connecter' : 'S\'inscrire' }}
+                            </button>
+                        </div>
+
+                        <!-- 🔁 Toggle -->
+                        <div class="text-center">
+                            <small class="text-muted">
+                                {{ isLoginMode ? 'Pas encore de compte ?' : 'Déjà un compte ?' }}
+                            </small>
+                            <br>
+                            <a href="#" class="text-decoration-none" (click)="isLoginMode = !isLoginMode">
+                                <i class="{{ isLoginMode ? 'fas fa-user-plus' : 'fas fa-sign-in-alt' }} me-1"></i>
+                                {{ isLoginMode ? 'Créer un compte' : 'Se connecter' }}
+                            </a>
+                        </div>
+
+                        <!-- ❌ Erreur -->
+                        <div *ngIf="error" class="alert alert-danger mt-3">
+                            <i class="fas fa-exclamation-triangle me-2"></i>{{ error }}
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

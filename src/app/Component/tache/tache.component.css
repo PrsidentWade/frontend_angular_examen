@@ -1,0 +1,252 @@
+/* Styles personnalisés pour la gestion des tâches avec Bootstrap */
+
+/* Animation des cartes de tâches */
+.task-card {
+    transition: all 0.3s ease;
+    border: 1px solid #dee2e6;
+}
+
+.task-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
+    border-color: #007bff;
+}
+
+/* Styles pour les badges d'état */
+.badge-warning {
+    background-color: #ffc107 !important;
+    color: #212529 !important;
+}
+
+.badge-info {
+    background-color: #007bff !important;
+    color: #000 !important;
+}
+
+.badge-success {
+    background-color: #198754 !important;
+    color: #fff !important;
+}
+
+/* Animation pour les alertes */
+.alert {
+    animation: slideInDown 0.5s ease-out;
+}
+
+@keyframes slideInDown {
+    0% {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+
+    100% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Style pour les modals */
+.modal.show {
+    animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+.modal-content {
+    animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+    0% {
+        transform: translateY(-50px);
+        opacity: 0;
+    }
+
+    100% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Styles pour les boutons */
+.btn {
+    transition: all 0.2s ease;
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+}
+
+.btn-group .btn {
+    border-radius: 0;
+}
+
+.btn-group .btn:first-child {
+    border-top-left-radius: 0.375rem;
+    border-bottom-left-radius: 0.375rem;
+}
+
+.btn-group .btn:last-child {
+    border-top-right-radius: 0.375rem;
+    border-bottom-right-radius: 0.375rem;
+}
+
+/* Animation du spinner de loading */
+.spinner-border {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* Style pour les cartes principales */
+.card {
+    border: none;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Amélioration des formulaires */
+.form-control:focus,
+.form-select:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.is-invalid {
+    border-color: #dc3545;
+}
+
+.invalid-feedback {
+    display: block;
+    width: 100%;
+    margin-top: 0.25rem;
+    font-size: 0.875em;
+    color: #dc3545;
+}
+
+/* Style pour les icônes */
+.fas {
+    color: inherit;
+}
+
+/* Amélioration de la lisibilité */
+.text-muted {
+    color: #6c757d !important;
+}
+
+.text-primary {
+    color: #007bff !important;
+}
+
+.text-danger {
+    color: #dc3545 !important;
+}
+
+/* Responsive design amélioré */
+@media (max-width: 768px) {
+    .container-fluid {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+
+    .card-body {
+        padding: 1rem;
+    }
+
+    .modal-dialog {
+        margin: 1rem;
+    }
+
+    .btn-group {
+        flex-direction: column;
+    }
+
+    .btn-group .btn {
+        border-radius: 0.375rem !important;
+        margin-bottom: 5px;
+    }
+
+    .btn-group .btn:last-child {
+        margin-bottom: 0;
+    }
+}
+
+/* Animation pour les éléments qui apparaissent */
+.fade-in {
+    animation: fadeInUp 0.5s ease-out;
+}
+
+@keyframes fadeInUp {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Style pour les liens et boutons interactifs */
+a,
+.btn {
+    cursor: pointer;
+}
+
+.btn:disabled {
+    cursor: not-allowed;
+    opacity: 0.65;
+}
+
+/* Amélioration des espacements */
+.mb-custom {
+    margin-bottom: 1.5rem !important;
+}
+
+.mt-custom {
+    margin-top: 1.5rem !important;
+}
+
+/* Style pour les conteneurs de contenu */
+.content-wrapper {
+    background-color: #f8f9fa;
+    min-height: 100vh;
+}
+
+/* Amélioration des tooltips et info-bulles */
+.tooltip {
+    font-size: 0.875rem;
+}
+
+/* Style pour les badges personnalisés */
+.badge {
+    font-size: 0.75em;
+    font-weight: 600;
+    padding: 0.35em 0.65em;
+}
+
+/* Animation pour les transitions de page */
+.page-transition {
+    animation: pageSlideIn 0.4s ease-out;
+}

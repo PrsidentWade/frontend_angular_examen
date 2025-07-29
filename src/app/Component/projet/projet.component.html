@@ -1,0 +1,317 @@
+<div class="container-fluid p-0">
+  <!-- Header Section -->
+  <div class="d-flex justify-content-between align-items-center mb-4 p-4 bg-white rounded shadow-sm">
+    <div>
+      <h1 class="h3 mb-1 fw-bold text-dark">
+        <i class="fas fa-folder-open text-primary me-3"></i>Gestion des Projets
+      </h1>
+      <p class="text-muted mb-0">Organisez et suivez vos projets</p>
+    </div>
+    <div class="d-flex gap-2">
+      <button class="btn btn-outline-secondary">
+        <i class="fas fa-filter me-2"></i>Filtrer
+      </button>
+      <button class="btn btn-primary" (click)="openModal('add')">
+        <i class="fas fa-plus me-2"></i>Nouveau Projet
+      </button>
+    </div>
+  </div>
+
+  <!-- Search and Filters -->
+  <div class="row mb-4">
+    <div class="col-lg-8">
+      <div class="input-group">
+        <span class="input-group-text bg-white">
+          <i class="fas fa-search text-muted"></i>
+        </span>
+        <input type="text" class="form-control border-start-0" placeholder="Rechercher un projet..."
+          style="box-shadow: none;">
+      </div>
+    </div>
+    <div class="col-lg-4">
+      <select class="form-select">
+        <option>Tous les projets</option>
+        <option>Projets actifs</option>
+        <option>Projets terminés</option>
+        <option>Mes projets</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Loading spinner -->
+  <div *ngIf="loading" class="text-center py-5">
+    <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+      <span class="visually-hidden">Chargement...</span>
+    </div>
+    <p class="mt-3 text-muted">Chargement des projets...</p>
+  </div>
+
+  <!-- Projects Grid -->
+  <div *ngIf="!loading" class="row g-4">
+    <div class="col-xl-4 col-lg-6 col-md-6" *ngFor="let p of projets; trackBy: trackByProjectId">
+      <div class="card border-0 shadow-sm h-100 project-card">
+        <!-- Project Header -->
+        <div class="card-header bg-gradient border-0 text-white position-relative overflow-hidden"
+          [style.background]="getProjectColor(p.id)">
+          <div class="d-flex justify-content-between align-items-start">
+            <div>
+              <h5 class="card-title mb-1 fw-bold">{{ p.nom_project }}</h5>
+              <small class="opacity-75">{{ getProjectStatus(p) }}</small>
+            </div>
+            <div class="dropdown">
+              <button class="btn btn-sm btn-outline-light" type="button" data-bs-toggle="dropdown">
+                <i class="fas fa-ellipsis-v"></i>
+              </button>
+              <ul class="dropdown-menu">
+                <li><a class="dropdown-item" (click)="openModal('edit', p)">
+                    <i class="fas fa-edit me-2"></i>Modifier
+                  </a></li>
+                <li><a class="dropdown-item" href="#">
+                    <i class="fas fa-users me-2"></i>Équipe
+                  </a></li>
+                <li><a class="dropdown-item" href="#">
+                    <i class="fas fa-chart-bar me-2"></i>Statistiques
+                  </a></li>
+                <li>
+                  <hr class="dropdown-divider">
+                </li>
+                <li><a class="dropdown-item text-danger" (click)="onDelete(p.id)">
+                    <i class="fas fa-trash me-2"></i>Supprimer
+                  </a></li>
+              </ul>
+            </div>
+          </div>
+          <!-- Background Pattern -->
+          <div class="position-absolute top-0 end-0 opacity-25">
+            <i class="fas fa-folder-open" style="font-size: 4rem; margin-top: -10px; margin-right: -10px;"></i>
+          </div>
+        </div>
+
+        <!-- Project Body -->
+        <div class="card-body">
+          <p class="text-muted mb-3" style="height: 60px; overflow: hidden;">
+            <i class="fas fa-align-left text-primary me-2"></i>
+            {{ p.description }}
+          </p>
+
+          <!-- Project Stats -->
+          <div class="row text-center mb-3">
+            <div class="col-4">
+              <div class="border-end">
+                <h6 class="mb-1 text-primary fw-bold">{{ getTaskCount(p.id) }}</h6>
+                <small class="text-muted">Tâches</small>
+              </div>
+            </div>
+            <div class="col-4">
+              <div class="border-end">
+                <h6 class="mb-1 text-success fw-bold">{{ getCompletedTasks(p.id) }}</h6>
+                <small class="text-muted">Terminées</small>
+              </div>
+            </div>
+            <div class="col-4">
+              <h6 class="mb-1 text-warning fw-bold">{{ getTeamSize(p.id) }}</h6>
+              <small class="text-muted">Équipe</small>
+            </div>
+          </div>
+
+          <!-- Progress Bar -->
+          <div class="mb-3">
+            <div class="d-flex justify-content-between align-items-center mb-1">
+              <small class="text-muted">Progression</small>
+              <small class="text-muted">{{ getProjectProgress(p.id) }}%</small>
+            </div>
+            <div class="progress" style="height: 6px;">
+              <div class="progress-bar bg-success" [style.width.%]="getProjectProgress(p.id)"></div>
+            </div>
+          </div>
+
+          <!-- Project Info -->
+          <div class="d-flex justify-content-between align-items-center text-muted small">
+            <div>
+              <i class="fas fa-calendar-alt me-1"></i>
+              {{ p.created_at | date: 'dd/MM/yyyy' }}
+            </div>
+            <div>
+              <i class="fas fa-user me-1"></i>
+              {{ p.owner?.name }}
+            </div>
+          </div>
+        </div>
+
+        <!-- Project Footer -->
+        <div class="card-footer bg-transparent border-0">
+          <div class="d-flex gap-2">
+            <button class="btn btn-outline-primary btn-sm flex-grow-1" (click)="openModal('edit', p)">
+              <i class="fas fa-edit me-1"></i>Modifier
+            </button>
+            <button class="btn btn-danger btn-sm" title="Voir les tâches" (click)="onDelete(p.id)">
+              <i class="fas fa-trash-alt"></i> Supprimer
+            </button>
+            <button class="btn btn-outline-secondary btn-sm" title="Partager">
+              <i class="fas fa-share-alt"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Add New Project Card -->
+    <div class="col-xl-4 col-lg-6 col-md-6" *ngIf="!loading">
+      <div class="card border-2 border-dashed h-100 d-flex align-items-center justify-content-center"
+        style="min-height: 350px; cursor: pointer;" (click)="openModal('add')">
+        <div class="text-center text-muted">
+          <i class="fas fa-plus-circle mb-3" style="font-size: 3rem;"></i>
+          <h5>Créer un nouveau projet</h5>
+          <p class="mb-0">Démarrez un nouveau projet</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="!loading && projets.length === 0" class="col-12">
+      <div class="text-center py-5">
+        <i class="fas fa-folder-open text-muted mb-3" style="font-size: 4rem;"></i>
+        <h4 class="text-muted">Aucun projet trouvé</h4>
+        <p class="text-muted mb-4">Créez votre premier projet pour commencer à organiser votre travail</p>
+        <button class="btn btn-primary" (click)="openModal('add')">
+          <i class="fas fa-plus me-2"></i>Créer mon premier projet
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal pour ajout/modification de projet -->
+<div class="modal fade" id="projetModal" tabindex="-1" aria-labelledby="projetModalLabel"
+  [ngClass]="{ 'show d-block': showModal }" [attr.aria-hidden]="!showModal ? '' : null"
+  [attr.inert]="!showModal ? '' : null">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content border-0 shadow">
+      <div class="modal-header border-0 pb-0">
+        <div>
+          <h4 class="modal-title fw-bold" id="projetModalLabel">
+            <i class="fas fa-{{ editMode ? 'edit' : 'plus' }} text-primary me-2"></i>
+            {{ editMode ? 'Modifier le projet' : 'Nouveau projet' }}
+          </h4>
+          <p class="text-muted mb-0">{{ editMode ? 'Modifiez les informations du projet' : 'Créez un nouveau projet pour
+            organiser vos tâches' }}</p>
+        </div>
+        <button type="button" class="btn-close" (click)="closeModal()" aria-label="Close"></button>
+      </div>
+
+      <form [formGroup]="projetForm" (ngSubmit)="onSubmit()">
+        <div class="modal-body px-4">
+          <div class="row">
+            <!-- Nom du projet -->
+            <div class="col-12 mb-4">
+              <label for="nom_project" class="form-label fw-semibold">
+                <i class="fas fa-tag text-primary me-2"></i>
+                Nom du projet <span class="text-danger">*</span>
+              </label>
+              <input type="text" class="form-control form-control-lg" [class.is-invalid]="isFieldInvalid('nom_project')"
+                id="nom_project" formControlName="nom_project" placeholder="Ex: Application mobile, Site web..."
+                style="border-radius: 10px;">
+              <div class="invalid-feedback" *ngIf="isFieldInvalid('nom_project')">
+                {{ getFieldError('nom_project') }}
+              </div>
+            </div>
+
+            <!-- Description -->
+            <div class="col-12 mb-4">
+              <label for="description" class="form-label fw-semibold">
+                <i class="fas fa-align-left text-primary me-2"></i>
+                Description <span class="text-danger">*</span>
+              </label>
+              <textarea class="form-control" [class.is-invalid]="isFieldInvalid('description')" id="description"
+                formControlName="description" rows="4"
+                placeholder="Décrivez en détail les objectifs et le périmètre de votre projet..."
+                style="border-radius: 10px; resize: vertical;"></textarea>
+              <div class="invalid-feedback" *ngIf="isFieldInvalid('description')">
+                {{ getFieldError('description') }}
+              </div>
+              <div class="form-text">
+                <i class="fas fa-info-circle me-1"></i>
+                Une description claire aide votre équipe à comprendre les objectifs du projet
+              </div>
+            </div>
+
+            <!-- Options avancées (si en mode édition) -->
+            <div class="col-12" *ngIf="editMode">
+              <div class="bg-light rounded p-3">
+                <h6 class="fw-bold mb-3">
+                  <i class="fas fa-cog text-secondary me-2"></i>Options avancées
+                </h6>
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label">Statut du projet</label>
+                    <select class="form-select">
+                      <option>En cours</option>
+                      <option>En attente</option>
+                      <option>Terminé</option>
+                      <option>Annulé</option>
+                    </select>
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label">Priorité</label>
+                    <select class="form-select">
+                      <option>Normale</option>
+                      <option>Élevée</option>
+                      <option>Critique</option>
+                      <option>Faible</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer border-0 pt-0">
+          <button type="button" class="btn btn-outline-secondary" (click)="closeModal()">
+            <i class="fas fa-times me-2"></i>Annuler
+          </button>
+          <button type="submit" class="btn btn-primary" [disabled]="projetForm.invalid" [class.btn-loading]="loading">
+            <i class="fas fa-{{ editMode ? 'save' : 'plus' }} me-2"></i>
+            {{ editMode ? 'Mettre à jour' : 'Créer le projet' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Backdrop pour la modal -->
+<div class="modal-backdrop fade show" *ngIf="showModal" (click)="closeModal()"></div>
+
+<style>
+  .project-card {
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+
+  .project-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15) !important;
+  }
+
+  .btn-loading {
+    pointer-events: none;
+    opacity: 0.6;
+  }
+
+  .modal-content {
+    border-radius: 15px;
+  }
+
+  .form-control,
+  .form-select {
+    border: 2px solid #e9ecef;
+    transition: all 0.3s ease;
+  }
+
+  .form-control:focus,
+  .form-select:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.1);
+  }
+</style>

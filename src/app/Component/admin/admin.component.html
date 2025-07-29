@@ -1,0 +1,557 @@
+<div class="admin-dashboard">
+    <!-- Header administrateur professionnel -->
+    <header class="admin-header">
+        <div class="admin-header-content">
+            <div class="admin-title-section">
+                <div class="admin-shield">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <div class="admin-title">
+                    <h1>Administration</h1>
+                    <p>Panneau de contrôle système</p>
+                </div>
+            </div>
+            <div class="admin-actions">
+                <button class="admin-btn secondary" title="Paramètres système">
+                    <i class="fas fa-cogs"></i>
+                    <span>Config</span>
+                </button>
+                <button class="admin-btn secondary" title="Gestion utilisateurs">
+                    <i class="fas fa-users-cog"></i>
+                    <span>Utilisateurs</span>
+                </button>
+                <button class="admin-btn primary" (click)="refreshData()" [disabled]="loading" title="Actualiser">
+                    <i class="fas fa-sync-alt" [class.spinning]="loading"></i>
+                    <span>Actualiser</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Alertes système -->
+    <div class="system-alerts" *ngIf="!loading">
+        <div class="alert alert-warning">
+            <i class="fas fa-exclamation-triangle"></i>
+            <div class="alert-content">
+                <strong>Maintenance programmée</strong>
+                <span>Système de sauvegarde planifié demain à 2h00</span>
+            </div>
+            <button class="alert-close"><i class="fas fa-times"></i></button>
+        </div>
+    </div>
+
+    <!-- Loading état -->
+    <div *ngIf="loading" class="admin-loading">
+        <div class="loading-content">
+            <div class="loading-spinner">
+                <i class="fas fa-shield-alt spinning"></i>
+            </div>
+            <h3>Chargement du tableau de bord</h3>
+            <p>Récupération des données administrateur...</p>
+        </div>
+    </div>
+
+    <!-- Erreur -->
+    <div *ngIf="error && !loading" class="admin-error">
+        <div class="error-card">
+            <i class="fas fa-exclamation-circle"></i>
+            <h3>Erreur système</h3>
+            <p>{{ error }}</p>
+            <button class="admin-btn primary" (click)="refreshData()">
+                <i class="fas fa-redo"></i>
+                Réessayer
+            </button>
+        </div>
+    </div>
+
+    <!-- Contenu principal -->
+    <main *ngIf="!loading && !error" class="admin-content">
+
+        <!-- Métriques avancées -->
+        <section class="metrics-section">
+            <div class="metrics-grid">
+                <!-- Statistique Utilisateurs -->
+                <div class="metric-card primary">
+                    <div class="metric-header">
+                        <div class="metric-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="metric-actions">
+                            <button class="metric-action" title="Détails">
+                                <i class="fas fa-info-circle"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="metric-content">
+                        <div class="metric-value">{{ usersCount }}</div>
+                        <div class="metric-label">Utilisateurs actifs</div>
+                        <div class="metric-trend positive">
+                            <i class="fas fa-arrow-up"></i>
+                            <span>+12% ce mois</span>
+                        </div>
+                    </div>
+                    <div class="metric-chart">
+                        <div class="mini-chart">
+                            <div class="bar" style="height: 20%"></div>
+                            <div class="bar" style="height: 45%"></div>
+                            <div class="bar" style="height: 30%"></div>
+                            <div class="bar" style="height: 60%"></div>
+                            <div class="bar" style="height: 80%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Statistique Projets -->
+                <div class="metric-card success">
+                    <div class="metric-header">
+                        <div class="metric-icon">
+                            <i class="fas fa-project-diagram"></i>
+                        </div>
+                        <div class="metric-actions">
+                            <button class="metric-action">
+                                <i class="fas fa-external-link-alt"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="metric-content">
+                        <div class="metric-value">{{ projetsCount }}</div>
+                        <div class="metric-label">Projets en cours</div>
+                        <div class="metric-trend positive">
+                            <i class="fas fa-arrow-up"></i>
+                            <span>+8% cette semaine</span>
+                        </div>
+                    </div>
+                    <div class="metric-chart">
+                        <div class="progress-ring">
+                            <div class="progress-fill" style="transform: rotate(120deg)"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Statistique Tâches -->
+                <div class="metric-card warning">
+                    <div class="metric-header">
+                        <div class="metric-icon">
+                            <i class="fas fa-tasks"></i>
+                        </div>
+                        <div class="metric-actions">
+                            <button class="metric-action">
+                                <i class="fas fa-chart-line"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="metric-content">
+                        <div class="metric-value">{{ tachesCount }}</div>
+                        <div class="metric-label">Tâches totales</div>
+                        <div class="metric-trend neutral">
+                            <i class="fas fa-minus"></i>
+                            <span>Stable</span>
+                        </div>
+                    </div>
+                    <div class="metric-chart">
+                        <div class="donut-chart">
+                            <div class="donut-segment completed" style="--percentage: 60"></div>
+                            <div class="donut-center">60%</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Performance système -->
+                <div class="metric-card info">
+                    <div class="metric-header">
+                        <div class="metric-icon">
+                            <i class="fas fa-server"></i>
+                        </div>
+                        <div class="metric-actions">
+                            <button class="metric-action">
+                                <i class="fas fa-cog"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="metric-content">
+                        <div class="metric-value">98.5%</div>
+                        <div class="metric-label">Uptime système</div>
+                        <div class="metric-trend positive">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Excellent</span>
+                        </div>
+                    </div>
+                    <div class="metric-chart">
+                        <div class="status-indicator online">
+                            <div class="pulse"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Actions rapides d'administration -->
+        <section class="quick-actions">
+            <h2 class="section-title">
+                <i class="fas fa-bolt"></i>
+                Actions rapides
+            </h2>
+            <div class="actions-grid">
+                <button class="action-btn">
+                    <i class="fas fa-user-plus"></i>
+                    <span>Ajouter utilisateur</span>
+                </button>
+                <button class="action-btn">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>Sécurité</span>
+                </button>
+                <button class="action-btn">
+                    <i class="fas fa-database"></i>
+                    <span>Sauvegarde</span>
+                </button>
+                <button class="action-btn">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Rapports</span>
+                </button>
+                <button class="action-btn">
+                    <i class="fas fa-cogs"></i>
+                    <span>Configuration</span>
+                </button>
+                <button class="action-btn">
+                    <i class="fas fa-bell"></i>
+                    <span>Notifications</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- Gestion des utilisateurs -->
+        <section class="users-management">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="fas fa-users-cog"></i>
+                    Gestion des utilisateurs
+                </h2>
+                <div class="section-actions">
+                    <button class="admin-btn secondary">
+                        <i class="fas fa-filter"></i>
+                        Filtrer
+                    </button>
+                    <button class="admin-btn primary">
+                        <i class="fas fa-user-plus"></i>
+                        Nouvel utilisateur
+                    </button>
+                </div>
+            </div>
+
+            <div class="table-container">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>
+                                <input type="checkbox" class="checkbox">
+                            </th>
+                            <th>Utilisateur</th>
+                            <th>Email</th>
+                            <th>Rôle</th>
+                            <th>Statut</th>
+                            <th>Dernière connexion</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let projet of (projetsRecents || []).slice(0, 5)">
+                            <td>
+                                <input type="checkbox" class="checkbox">
+                            </td>
+                            <td>
+                                <div class="user-cell">
+                                    <div class="user-avatar">
+                                        <i class="fas fa-user"></i>
+                                    </div>
+                                    <div class="user-info">
+                                        <div class="user-name">{{ projet.owner?.name || 'N/A' }}</div>
+                                        <div class="user-id">#{{ projet.id }}</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>{{ projet.owner?.email || 'N/A' }}</td>
+                            <td>
+                                <span class="role-badge admin">Admin</span>
+                            </td>
+                            <td>
+                                <span class="status-badge active">
+                                    <i class="fas fa-circle"></i>
+                                    Actif
+                                </span>
+                            </td>
+                            <td>{{ formatDate(projet.created_at || '') }}</td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="btn-icon" title="Modifier">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="btn-icon danger" title="Supprimer">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="table-pagination">
+                    <div class="pagination-info">
+                        Affichage de 1-5 sur {{ projetsRecents.length }} utilisateurs
+                    </div>
+                    <div class="pagination-controls">
+                        <button class="page-btn" disabled>
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <button class="page-btn active">1</button>
+                        <button class="page-btn">2</button>
+                        <button class="page-btn">3</button>
+                        <button class="page-btn">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Graphiques avancés -->
+        <section class="analytics-section">
+            <h2 class="section-title">
+                <i class="fas fa-chart-line"></i>
+                Analytiques avancées
+            </h2>
+            <div class="charts-grid">
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <h3>Répartition des tâches</h3>
+                        <div class="chart-actions">
+                            <button class="chart-btn">
+                                <i class="fas fa-expand"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="chart-content">
+                        <canvas #tasksChart></canvas>
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <h3>Activité des projets</h3>
+                        <div class="chart-actions">
+                            <button class="chart-btn">
+                                <i class="fas fa-download"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="chart-content">
+                        <canvas #projectsChart></canvas>
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <h3>Vue d'ensemble</h3>
+                        <div class="chart-actions">
+                            <button class="chart-btn">
+                                <i class="fas fa-cog"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="chart-content">
+                        <canvas #usersChart></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Activité récente et logs -->
+        <section class="activity-section">
+            <div class="activity-grid">
+                <!-- Projets récents -->
+                <div class="activity-card">
+                    <div class="card-header">
+                        <h3>
+                            <i class="fas fa-project-diagram"></i>
+                            Projets récents
+                        </h3>
+                        <button class="view-all-btn">Voir tout</button>
+                    </div>
+                    <div class="card-content">
+                        <div class="activity-list" *ngIf="projetsRecents.length > 0; else noProjects">
+                            <div class="activity-item" *ngFor="let projet of (projetsRecents || []).slice(0, 4)">
+                                <div class="activity-icon project">
+                                    <i class="fas fa-folder"></i>
+                                </div>
+                                <div class="activity-details">
+                                    <div class="activity-title">{{ projet.nom_project }}</div>
+                                    <div class="activity-description">{{ (projet.description || '') | slice:0:60 }}...
+                                    </div>
+                                    <div class="activity-meta">
+                                        <span class="activity-user">
+                                            <i class="fas fa-user"></i>
+                                            {{ projet.owner?.name }}
+                                        </span>
+                                        <span class="activity-date">{{ formatDate(projet.created_at || '') }}</span>
+                                    </div>
+                                </div>
+                                <div class="activity-status">
+                                    <span class="status-dot active"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <ng-template #noProjects>
+                            <div class="empty-state">
+                                <i class="fas fa-project-diagram"></i>
+                                <p>Aucun projet récent</p>
+                            </div>
+                        </ng-template>
+                    </div>
+                </div>
+
+
+
+                <!-- Tâches récentes -->
+                <div class="activity-card full-width">
+                    <div class="card-header">
+                        <h3>
+                            <i class="fas fa-tasks"></i>
+                            Tâches récentes
+                        </h3>
+                        <div class="card-actions">
+                            <button class="filter-btn">
+                                <i class="fas fa-filter"></i>
+                                Filtrer
+                            </button>
+                            <button class="view-all-btn">Gérer toutes</button>
+                        </div>
+                    </div>
+                    <div class="card-content">
+                        <div class="tasks-grid" *ngIf="tachesRecentes.length > 0; else noTasks">
+                            <div class="task-item" *ngFor="let tache of (tachesRecentes || []).slice(0, 6)">
+                                <div class="task-priority high"></div>
+                                <div class="task-content">
+                                    <div class="task-header">
+                                        <h4>{{ tache.titre }}</h4>
+                                        <span class="task-status" [ngClass]="getTaskStatusClass(tache.etat)">
+                                            {{ getTaskStatusText(tache.etat) }}
+                                        </span>
+                                    </div>
+                                    <p class="task-description">{{ (tache.description || '') | slice:0:80 }}...</p>
+                                    <div class="task-footer">
+                                        <div class="task-assignee">
+                                            <i class="fas fa-user"></i>
+                                            {{ tache.assignee?.name || 'Non assigné' }}
+                                        </div>
+                                        <div class="task-project">
+                                            <i class="fas fa-folder"></i>
+                                            {{ tache.project?.nom_project || 'Aucun projet' }}
+                                        </div>
+                                        <div class="task-deadline">
+                                            <i class="fas fa-clock"></i>
+                                            {{ tache.deadline }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <ng-template #noTasks>
+                            <div class="empty-state">
+                                <i class="fas fa-tasks"></i>
+                                <p>Aucune tâche récente</p>
+                            </div>
+                        </ng-template>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Configuration système -->
+        <section class="system-config">
+            <h2 class="section-title">
+                <i class="fas fa-cogs"></i>
+                Configuration système
+            </h2>
+            <div class="config-grid">
+                <div class="config-card">
+                    <div class="config-header">
+                        <i class="fas fa-server"></i>
+                        <h3>Serveur</h3>
+                    </div>
+                    <div class="config-content">
+                        <div class="config-item">
+                            <label>CPU Usage</label>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 45%"></div>
+                                <span>45%</span>
+                            </div>
+                        </div>
+                        <div class="config-item">
+                            <label>Mémoire</label>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 68%"></div>
+                                <span>68%</span>
+                            </div>
+                        </div>
+                        <div class="config-item">
+                            <label>Stockage</label>
+                            <div class="progress-bar warning">
+                                <div class="progress-fill" style="width: 85%"></div>
+                                <span>85%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="config-card">
+                    <div class="config-header">
+                        <i class="fas fa-shield-alt"></i>
+                        <h3>Sécurité</h3>
+                    </div>
+                    <div class="config-content">
+                        <div class="security-item">
+                            <div class="security-check">
+                                <i class="fas fa-check-circle success"></i>
+                                <span>Firewall activé</span>
+                            </div>
+                        </div>
+                        <div class="security-item">
+                            <div class="security-check">
+                                <i class="fas fa-check-circle success"></i>
+                                <span>SSL configuré</span>
+                            </div>
+                        </div>
+                        <div class="security-item">
+                            <div class="security-check">
+                                <i class="fas fa-exclamation-triangle warning"></i>
+                                <span>Mise à jour sécurité disponible</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="config-card">
+                    <div class="config-header">
+                        <i class="fas fa-database"></i>
+                        <h3>Base de données</h3>
+                    </div>
+                    <div class="config-content">
+                        <div class="db-stats">
+                            <div class="db-stat">
+                                <span class="stat-label">Connexions</span>
+                                <span class="stat-value">142/200</span>
+                            </div>
+                            <div class="db-stat">
+                                <span class="stat-label">Queries/sec</span>
+                                <span class="stat-value">1,453</span>
+                            </div>
+                            <div class="db-stat">
+                                <span class="stat-label">Uptime</span>
+                                <span class="stat-value">7d 14h</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+</div>

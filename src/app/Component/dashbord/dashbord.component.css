@@ -1,0 +1,124 @@
+.card {
+  border: none;
+  border-radius: 16px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  overflow: hidden;
+  position: relative;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+}
+
+.card-body {
+  padding: 1.5rem;
+}
+
+.card-header {
+  background: rgba(0, 0, 0, 0.03);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+  padding: 1rem 1.5rem;
+}
+
+.bg-primary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  position: relative;
+  overflow: hidden;
+}
+
+.bg-success {
+  background: linear-gradient(135deg, #56ab2f 0%, #a8e6cf 100%) !important;
+  position: relative;
+  overflow: hidden;
+}
+
+.bg-warning {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%) !important;
+  position: relative;
+  overflow: hidden;
+}
+
+.bg-primary::after,
+.bg-success::after,
+.bg-warning::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -50%;
+  width: 100px;
+  height: 100px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+}
+
+h2 {
+  color: #1f2937;
+  font-weight: 600;
+}
+
+canvas {
+  max-height: 300px !important;
+}
+
+/* États de chargement et d'erreur */
+.spinner-border {
+  width: 3rem;
+  height: 3rem;
+}
+
+.alert {
+  border-radius: 12px;
+  border: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.btn {
+  border-radius: 8px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+}
+
+.fa-spin {
+  animation: fa-spin 1s infinite linear;
+}
+
+@keyframes fa-spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Améliorations responsives */
+@media (max-width: 768px) {
+  .col-md-4 {
+    margin-bottom: 1rem;
+  }
+
+  .card-body {
+    padding: 1rem;
+  }
+
+  h2 {
+    font-size: 1.5rem;
+  }
+}
